@@ -1,35 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React from "react";
+import { NativeBaseProvider, Box, Center, extendTheme } from "native-base";
+
+const newColorTheme = {
+  brand: {
+    900: "#8287af",
+    800: "#7c83db",
+    700: "#b3bef6"
+  }
+};
+const theme = extendTheme({ colors: newColorTheme });
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={{ color: '#888', fontSize: 18 }}>
-        To upload a photo, press the button below!
-      </Text>
-      <TouchableOpacity
-        onPress={() => alert('Hello, world!')}
-        style={styles.button}>
-        <Text style={styles.buttonText}>Pick a photo</Text>
-      </TouchableOpacity>
-    </View>
+    <NativeBaseProvider theme={theme}>
+      <Center flex={1}>
+        <Box>Welcome to ITUDict!</Box>
+      </Center>
+    </NativeBaseProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button: {
-    backgroundColor: "blue",
-    padding: 20,
-    borderRadius: 5,
-  },
-  buttonText: {
-    fontSize: 20,
-    color: '#fff',
-  },
-});
