@@ -1,20 +1,20 @@
 import React from "react";
-import { NativeBaseProvider, Box, Center, extendTheme } from "native-base";
+import { NativeBaseProvider, extendTheme, Center } from "native-base";
+import Login from "./src/screens/auth/login/Login";
+import Register from "./src/screens/auth/register/Register";
 
-const newColorTheme = {
-  brand: {
-    900: "#8287af",
-    800: "#7c83db",
-    700: "#b3bef6"
-  }
-};
-const theme = extendTheme({ colors: newColorTheme });
+export default function () {
+  const theme = extendTheme({
+    config: {
+      initialColorMode: "dark"
+    }
+  });
 
-export default function App() {
   return (
     <NativeBaseProvider theme={theme}>
-      <Center flex={1}>
-        <Box>Welcome to ITUDict!</Box>
+      <Center flex={1} bg="dark.100">
+        // TODO: add navigation and redux for auth
+        <Register />
       </Center>
     </NativeBaseProvider>
   );
