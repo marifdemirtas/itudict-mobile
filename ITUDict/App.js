@@ -1,7 +1,8 @@
-import React from "react";
-import { NativeBaseProvider, extendTheme, Center } from "native-base";
-import Login from "./src/screens/auth/login/Login";
-import Register from "./src/screens/auth/register/Register";
+import { NativeBaseProvider, extendTheme } from "native-base";
+import { AuthContextProvider } from "./src/contexts/AuthContext";
+import { AxiosContextProvider } from "./src/contexts/AxiosContext";
+import { NavigationContainer } from "@react-navigation/native";
+import { AuthNavigator } from "./src/navigation/AuthNavigator";
 
 export default function () {
   const theme = extendTheme({
@@ -9,13 +10,15 @@ export default function () {
       initialColorMode: "dark"
     }
   });
-
   return (
     <NativeBaseProvider theme={theme}>
-      <Center flex={1} bg="dark.100">
-        // TODO: add navigation and redux for auth
-        <Register />
-      </Center>
+      <AuthContextProvider>
+        <AxiosContextProvider>
+          <NavigationContainer>
+            <AuthNavigator />
+          </NavigationContainer>
+        </AxiosContextProvider>
+      </AuthContextProvider>
     </NativeBaseProvider>
   );
 }
