@@ -7,7 +7,7 @@ const AuthContextProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     isAuthenticated: false,
     accessToken: null,
-    refreshToken: null
+    refreshToken: null,
   });
 
   const logout = async () => {
@@ -15,7 +15,7 @@ const AuthContextProvider = ({ children }) => {
     setAuthState({
       isAuthenticated: false,
       accessToken: null,
-      refreshToken: null
+      refreshToken: null,
     });
   };
 
@@ -29,7 +29,7 @@ const AuthContextProvider = ({ children }) => {
         authState,
         getAccessToken,
         setAuthState,
-        logout
+        logout,
       }}
     >
       {children}

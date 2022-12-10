@@ -24,7 +24,7 @@ export const AuthNavigator = () => {
         authContext.setAuthState({
           accessToken: jwt.accessToken || null,
           refreshToken: jwt.refreshToken || null,
-          isAuthenticated: jwt.accessToken !== null
+          isAuthenticated: jwt.accessToken !== null,
         });
         setStatus("success");
       } else {
@@ -36,7 +36,7 @@ export const AuthNavigator = () => {
       authContext.setAuthState({
         accessToken: null,
         refreshToken: null,
-        isAuthenticated: false
+        isAuthenticated: false,
       });
     }
   }, []);
@@ -46,13 +46,15 @@ export const AuthNavigator = () => {
   }, [loadJWT]);
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false, animation: "fade_from_bottom" }}>
+    <Stack.Navigator
+      screenOptions={{ headerShown: false, animation: "fade_from_bottom" }}
+    >
       {status === "loading" ? (
         <Stack.Screen
           name="Loading"
           component={Loading}
           options={{
-            headerShown: false
+            headerShown: false,
           }}
         />
       ) : authContext.authState.isAuthenticated ? (

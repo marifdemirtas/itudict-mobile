@@ -1,4 +1,12 @@
-import { Text, Box, HStack, Spacer, Pressable, Center, ScrollView } from "native-base";
+import {
+  Text,
+  Box,
+  HStack,
+  Spacer,
+  Pressable,
+  Center,
+  ScrollView,
+} from "native-base";
 import { CreateTopic } from "../../components/feed/CreateTopic";
 
 export const TopicList = ({ data, isAdmin }) => {
@@ -7,8 +15,20 @@ export const TopicList = ({ data, isAdmin }) => {
       <ScrollView w="100%">
         {isAdmin && <CreateTopic />}
         {data.map((item, index) => (
-          <Box borderBottomWidth="1" borderColor="muted.400" pl={["0", "4"]} pr={["0", "5"]} py="2%" key={index}>
-            <HStack space={[2, 3]} justifyContent="space-between" px="5%" py="2%">
+          <Box
+            borderBottomWidth="1"
+            borderColor="muted.400"
+            pl={["0", "4"]}
+            pr={["0", "5"]}
+            py="2%"
+            key={index}
+          >
+            <HStack
+              space={[2, 3]}
+              justifyContent="space-between"
+              px="5%"
+              py="2%"
+            >
               <Pressable
                 onPress={() => {
                   console.log("Pressed", item.topic);

@@ -12,11 +12,11 @@ const AxiosContextProvider = ({ children }) => {
   const authContext = useContext(AuthContext);
 
   const authAxios = axios.create({
-    baseURL: BACKEND_API_URL
+    baseURL: BACKEND_API_URL,
   });
 
   const publicAxios = axios.create({
-    baseURL: BACKEND_API_URL
+    baseURL: BACKEND_API_URL,
   });
 
   authAxios.interceptors.request.use(
@@ -37,23 +37,24 @@ const AxiosContextProvider = ({ children }) => {
       method: "POST",
       url: `${BACKEND_API_URL}${backendApi.refresh}`,
       data: {
-        refreshToken: authContext.authState.refreshToken
-      }
+        refreshToken: authContext.authState.refreshToken,
+      },
     };
     try {
       const tokenRefreshResponse = await axios(options);
-      failedRequest.response.config.headers.Authorization = "Bearer " + tokenRefreshResponse.data.accessToken;
+      failedRequest.response.config.headers.Authorization =
+        "Bearer " + tokenRefreshResponse.data.accessToken;
 
       authContext.setAuthState({
         ...authContext.authState,
-        accessToken: tokenRefreshResponse.data.accessToken
+        accessToken: tokenRefreshResponse.data.accessToken,
       });
 
       await Keychain.setGenericPassword(
         "token",
         JSON.stringify({
           accessToken: tokenRefreshResponse.data.accessToken,
-          refreshToken: authContext.authState.refreshToken
+          refreshToken: authContext.authState.refreshToken,
         })
       );
       return await Promise.resolve();
@@ -61,14 +62,18 @@ const AxiosContextProvider = ({ children }) => {
       authContext.setAuthState({
         accessToken: null,
         refreshToken: null,
-        isAuthenticated: false
+        isAuthenticated: false,
       });
     }
   };
 
   createAuthRefreshInterceptor(authAxios, refreshAuthLogic);
 
-  return <AxiosContext.Provider value={{ authAxios, publicAxios }}>{children}</AxiosContext.Provider>;
+  return (
+    <AxiosContext.Provider value={{ authAxios, publicAxios }}>
+      {children}
+    </AxiosContext.Provider>
+  );
 };
 
 export { AxiosContext, AxiosContextProvider };

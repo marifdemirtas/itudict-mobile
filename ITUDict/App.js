@@ -7,8 +7,8 @@ import { AuthNavigator } from "./src/navigation/AuthNavigator";
 export default function () {
   const theme = extendTheme({
     config: {
-      initialColorMode: "dark"
-    }
+      initialColorMode: "dark",
+    },
   });
   return (
     <NativeBaseProvider theme={theme}>
