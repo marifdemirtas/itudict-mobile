@@ -6,6 +6,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "../contexts/AuthContext";
 import { Register } from "../screens/auth/register/Register";
 import { Loading } from "../components/common/Loading";
+import { TabBar } from "react-native-tab-view";
+import { HomeTabs } from "./HomeTabs";
 
 const Stack = createNativeStackNavigator();
 
@@ -54,12 +56,14 @@ export const AuthNavigator = () => {
           }}
         />
       ) : authContext.authState.isAuthenticated ? (
-        <Stack.Screen name="Feed" component={Feed} /> // TODO: Feed component
+        // TODO: Feed component
+        <Stack.Screen name="Home" component={HomeTabs} />
       ) : (
-        <Stack.Group>
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Register" component={Register} />
-        </Stack.Group>
+        // <Stack.Group>
+        //   <Stack.Screen name="Login" component={Login} />
+        //   <Stack.Screen name="Register" component={Register} />
+        // </Stack.Group>
+        <Stack.Screen name="Home" component={HomeTabs} />
       )}
     </Stack.Navigator>
   );

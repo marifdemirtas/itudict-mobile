@@ -1,4 +1,4 @@
-import { NativeBaseProvider, extendTheme } from "native-base";
+import { NativeBaseProvider, extendTheme, StatusBar } from "native-base";
 import { AuthContextProvider } from "./src/contexts/AuthContext";
 import { AxiosContextProvider } from "./src/contexts/AxiosContext";
 import { NavigationContainer } from "@react-navigation/native";
@@ -15,6 +15,7 @@ export default function () {
       <AuthContextProvider>
         <AxiosContextProvider>
           <NavigationContainer>
+            <StatusBar />
             <AuthNavigator />
           </NavigationContainer>
         </AxiosContextProvider>
