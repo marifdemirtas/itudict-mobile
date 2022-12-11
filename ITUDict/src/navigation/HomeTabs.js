@@ -1,14 +1,14 @@
 import { Dimensions, TouchableOpacity, Animated } from "react-native";
 import { Box, Center } from "native-base";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Latest } from "../screens/feed/Latest";
-import { Popular } from "../screens/feed/Popular";
 import { Profile } from "../screens/profile/Profile";
+import { LatestNavigator } from "./LatestNavigator";
+import { PopularNavigator } from "./PopularNavigator";
 
 const Tab = createMaterialTopTabNavigator();
 
 const initialLayout = {
-  width: Dimensions.get("window").width,
+  width: Dimensions.get("window").width
 };
 
 const CustomizedTabBar = ({ state, descriptors, navigation, position }) => {
@@ -25,12 +25,7 @@ const CustomizedTabBar = ({ state, descriptors, navigation, position }) => {
       >
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-              ? options.title
-              : route.name;
+          const label = options.tabBarLabel !== undefined ? options.tabBarLabel : options.title !== undefined ? options.title : route.name;
           const isFocused = state.index === index;
           const borderWidth = isFocused ? 5 : 0;
           const color = isFocused ? "#fafafa" : "#a3a3a3";
@@ -38,31 +33,23 @@ const CustomizedTabBar = ({ state, descriptors, navigation, position }) => {
           const onPress = () => {
             const event = navigation.emit({
               type: "tabPress",
-              target: route.key,
+              target: route.key
             });
 
             if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
+              navigation.navigate(route.name !== "Profile" ? route.name + "Screen" : route.name);
             }
           };
 
           const onLongPress = () => {
             navigation.emit({
               type: "tabLongPress",
-              target: route.key,
+              target: route.key
             });
           };
 
           return (
-            <Box
-              borderBottomWidth={borderWidth}
-              borderColor="darkBlue.100"
-              flex={1}
-              alignItems="center"
-              p="3"
-              cursor="pointer"
-              key={index}
-            >
+            <Box borderBottomWidth={borderWidth} borderColor="darkBlue.100" flex={1} alignItems="center" p="3" cursor="pointer" key={index}>
               <TouchableOpacity
                 accessibilityRole="button"
                 accessibilityState={isFocused ? { selected: true } : {}}
@@ -83,12 +70,9 @@ const CustomizedTabBar = ({ state, descriptors, navigation, position }) => {
 
 export const HomeTabs = () => {
   return (
-    <Tab.Navigator
-      tabBar={(props) => <CustomizedTabBar {...props} />}
-      initialLayout={initialLayout}
-    >
-      <Tab.Screen name="Latest" component={Latest} />
-      <Tab.Screen name="Popular" component={Popular} />
+    <Tab.Navigator tabBar={(props) => <CustomizedTabBar {...props} />} initialLayout={initialLayout}>
+      <Tab.Screen name="Latest" component={LatestNavigator} />
+      <Tab.Screen name="Popular" component={PopularNavigator} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );

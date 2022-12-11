@@ -1,11 +1,22 @@
-import { Box, Text, Avatar, HStack, Spacer, ScrollView } from "native-base";
+import { Box, Text, Avatar, HStack, ScrollView } from "native-base";
 import dummyAvatar from "../../../assets/dummy-avatar.png";
+import { useState } from "react";
+import { Pagination } from "../../components/common/Pagination";
+
 export const Profile = () => {
+  const [page, setPage] = useState({
+    currentPage: 1,
+    totalPages: 5
+  });
+
+  const setCurrentPage = (page_) => {
+    setPage({ ...page, currentPage: page_ });
+  };
+
   const user = {
     name: "John Doe",
     username: "canerce99",
-    avatar:
-      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    avatar: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
     registerDate: "01/01/2022",
     entries: [
       {
@@ -13,33 +24,30 @@ export const Profile = () => {
         topic: "React Native",
         date: "14/01/2022",
         comment:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
       },
       {
         id: 2,
         topic: "Sweephy",
         date: "14/01/2022",
         comment:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
       },
       {
         id: 3,
         topic: "Sweephy",
         date: "14/01/2022",
         comment:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
-      },
-    ],
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+      }
+    ]
   };
 
   return (
     <ScrollView w="100%" h="100%" bg="dark.100">
       <Box mb="4%" pt="8%" flex={1}>
         <HStack justifyContent="flex-start" mx="6%" space={6}>
-          <Avatar
-            size="xl"
-            source={user.avatar ? { uri: user.avatar } : dummyAvatar}
-          />
+          <Avatar size="xl" source={user.avatar ? { uri: user.avatar } : dummyAvatar} />
           <Box>
             <Text fontSize="2xl" color="darkBlue.100">
               {user.username}
@@ -67,6 +75,7 @@ export const Profile = () => {
           </Box>
         ))}
       </Box>
+      <Pagination currentPage={page.currentPage} setCurrentPage={setCurrentPage} totalPages={page.totalPages} />
     </ScrollView>
   );
 };

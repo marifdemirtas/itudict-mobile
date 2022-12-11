@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Button, FormControl, Center, Input, Modal } from "native-base";
 
 export const CreateTopic = () => {
@@ -11,20 +11,22 @@ export const CreateTopic = () => {
           <Modal.Header>Create New Topic</Modal.Header>
           <Modal.Body>
             <FormControl>
-              <FormControl.Label>New Topic</FormControl.Label>
-              <Input focusOutlineColor="darkBlue.100" />
+              <Input focusOutlineColor="darkBlue.100" placeholder="Enter new topic" />
             </FormControl>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              bg="darkBlue.100"
-              _text={{ color: "black" }}
-              onPress={() => {
-                setModalVisible(false);
-              }}
-            >
-              Submit
-            </Button>
+            <Center flex={1}>
+              <Button
+                w="100%"
+                bg="darkBlue.100"
+                _text={{ color: "black" }}
+                onPress={() => {
+                  setModalVisible(false);
+                }}
+              >
+                Create New Topic
+              </Button>
+            </Center>
           </Modal.Footer>
         </Modal.Content>
       </Modal>
