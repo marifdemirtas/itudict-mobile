@@ -1,9 +1,12 @@
 import { Dimensions, TouchableOpacity, Animated } from "react-native";
-import { Box, Center } from "native-base";
+import { Box, Center, IconButton } from "native-base";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { LatestNavigator } from "./LatestNavigator";
 import { PopularNavigator } from "./PopularNavigator";
 import { ProfileNavigator } from "./ProfileNavigator";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { FontAwesome } from "@expo/vector-icons";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -11,7 +14,7 @@ const initialLayout = {
   width: Dimensions.get("window").width
 };
 
-const CustomizedTabBar = ({ state, descriptors, navigation, position }) => {
+const CustomizedTabBar = ({ state, descriptors, navigation, position, authContext }) => {
   return (
     <Center width="100%" bg="dark.100" paddingTop="10%">
       <Box
@@ -63,14 +66,16 @@ const CustomizedTabBar = ({ state, descriptors, navigation, position }) => {
             </Box>
           );
         })}
+        <IconButton onPress={() => authContext.logout()} _icon={{ as: FontAwesome, name: "sign-out", color: "darkBlue.100" }} />
       </Box>
     </Center>
   );
 };
 
 export const HomeTabs = () => {
+  const authContext = useContext(AuthContext);
   return (
-    <Tab.Navigator tabBar={(props) => <CustomizedTabBar {...props} />} initialLayout={initialLayout}>
+    <Tab.Navigator tabBar={(props) => <CustomizedTabBar {...props} authContext={authContext} />} initialLayout={initialLayout}>
       <Tab.Screen name="Latest" component={LatestNavigator} />
       <Tab.Screen name="Popular" component={PopularNavigator} />
       <Tab.Screen name="My Profile" component={ProfileNavigator} />
