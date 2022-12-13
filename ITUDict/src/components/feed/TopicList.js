@@ -7,25 +7,27 @@ export const TopicList = ({ data, isSenior, topicNavigation }) => {
       <ScrollView w="100%">
         {isSenior && <CreateTopic />}
         {data.map((item, index) => (
-          <Box borderBottomWidth="1" borderColor="muted.400" pl={["0", "4"]} pr={["0", "5"]} py="2%" key={index}>
-            <HStack space={[2, 3]} justifyContent="space-between" px="5%" py="2%">
-              <Pressable
-                onPress={() => {
-                  topicNavigation(item);
-                }}
-              >
+          <Pressable
+            key={index}
+            onPress={() => {
+              topicNavigation(item);
+            }}
+          >
+            <Box borderBottomWidth="1" borderColor="muted.400" pl={["0", "4"]} pr={["0", "5"]} py="2%">
+              <HStack space={[2, 3]} justifyContent="space-between" px="5%" py="2%">
                 <Text fontSize="md" color="darkBlue.100" bold>
                   {item.topic}
                 </Text>
-              </Pressable>
-              <Spacer />
-              <Center>
-                <Text fontSize="sm" color="white" bold>
-                  {item.entryCount}
-                </Text>
-              </Center>
-            </HStack>
-          </Box>
+
+                <Spacer />
+                <Center>
+                  <Text fontSize="sm" color="white" bold>
+                    {item.entryCount}
+                  </Text>
+                </Center>
+              </HStack>
+            </Box>
+          </Pressable>
         ))}
       </ScrollView>
     </Box>
