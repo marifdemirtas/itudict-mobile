@@ -18,6 +18,7 @@ export const Profile = () => {
     username: "canerce99",
     avatar: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
     registerDate: "01/01/2022",
+    rank: "Senior",
     entries: [
       {
         id: 1,
@@ -51,6 +52,9 @@ export const Profile = () => {
           <Box>
             <Text fontSize="2xl" color="darkBlue.100">
               {user.username}
+            </Text>
+            <Text fontSize="md" color="muted.300">
+              {user.rank}
             </Text>
             <Text fontSize="xs" color="muted.400">
               Joined {user.registerDate}
