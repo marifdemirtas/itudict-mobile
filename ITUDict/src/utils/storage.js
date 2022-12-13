@@ -1,10 +1,10 @@
-import { getError } from "./error";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const storeStringData = async (key, value) => {
   try {
     await AsyncStorage.setItem(key, value);
   } catch (e) {
-    getError(e, "Error storing data");
+    throw e;
   }
 };
 
@@ -13,7 +13,7 @@ const storeObjectData = async (key, value) => {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
   } catch (e) {
-    getError(e, "Error storing data");
+    throw e;
   }
 };
 
@@ -24,7 +24,7 @@ const getStringData = async (key) => {
       return value;
     }
   } catch (e) {
-    getError(e, "Error getting data");
+    throw e;
   }
 };
 
@@ -33,7 +33,7 @@ const getObjectData = async (key) => {
     const jsonValue = await AsyncStorage.getItem(key);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
-    getError(e, "Error getting data");
+    throw e;
   }
 };
 
@@ -41,7 +41,7 @@ const clearAll = async () => {
   try {
     await AsyncStorage.clear();
   } catch (e) {
-    getError(e, "Error clearing data");
+    throw e;
   }
 };
 
