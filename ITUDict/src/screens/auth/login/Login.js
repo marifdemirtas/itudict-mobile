@@ -5,8 +5,8 @@ import { backendApi } from "../../../utils/urls";
 import { ToastAlert } from "../../../components/common/ToastAlert";
 import { AxiosContext } from "../../../contexts/AxiosContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { storeObjectData } from "../../../services/utils/storage";
-import { getError } from "../../../services/utils/error";
+import { storeObjectData } from "../../../utils/storage";
+import { getError } from "../../../utils/error";
 
 //TODO: Add validation and error handling
 export const Login = ({ navigation }) => {

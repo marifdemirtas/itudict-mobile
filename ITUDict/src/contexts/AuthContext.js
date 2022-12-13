@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { clearAll } from "../services/utils/storage";
+import { clearAll } from "../utils/storage";
 import { useToast } from "native-base";
 
 const AuthContext = createContext();

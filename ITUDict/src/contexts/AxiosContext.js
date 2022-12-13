@@ -4,7 +4,7 @@ import { AuthContext } from "./AuthContext";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 import { BACKEND_API_URL } from "../utils/constants";
 import { backendApi } from "../utils/urls";
-import { storeObjectData } from "../services/utils/storage";
+import { storeObjectData } from "../utils/storage";
 
 const AxiosContext = createContext();
 

@@ -7,7 +7,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { Register } from "../screens/auth/register/Register";
 import { Loading } from "../components/common/Loading";
 import { HomeTabs } from "./HomeTabs";
-import { getObjectData } from "../services/utils/storage";
+import { getObjectData } from "../utils/storage";
 
 const Stack = createNativeStackNavigator();
 

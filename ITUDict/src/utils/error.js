@@ -1,4 +1,4 @@
-import { ToastAlert } from "../../components/common/ToastAlert";
+import { ToastAlert } from "../components/common/ToastAlert";
 
 export const getError = (error, title, toast) => {
   toast.show({
