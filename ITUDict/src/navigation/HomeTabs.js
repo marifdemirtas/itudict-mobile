@@ -1,9 +1,9 @@
 import { Dimensions, TouchableOpacity, Animated } from "react-native";
 import { Box, Center } from "native-base";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Profile } from "../screens/profile/Profile";
 import { LatestNavigator } from "./LatestNavigator";
 import { PopularNavigator } from "./PopularNavigator";
+import { ProfileNavigator } from "./ProfileNavigator";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -73,7 +73,7 @@ export const HomeTabs = () => {
     <Tab.Navigator tabBar={(props) => <CustomizedTabBar {...props} />} initialLayout={initialLayout}>
       <Tab.Screen name="Latest" component={LatestNavigator} />
       <Tab.Screen name="Popular" component={PopularNavigator} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="My Profile" component={ProfileNavigator} />
     </Tab.Navigator>
   );
 };

@@ -3,11 +3,13 @@ import dummyAvatar from "../../../assets/dummy-avatar.png";
 import { useState } from "react";
 import { Pagination } from "../../components/common/Pagination";
 
-export const Profile = () => {
+export const Profile = ({ route }) => {
   const [page, setPage] = useState({
     currentPage: 1,
     totalPages: 5
   });
+
+  //TODO: Fetch data from backend with route params
 
   const setCurrentPage = (page_) => {
     setPage({ ...page, currentPage: page_ });
