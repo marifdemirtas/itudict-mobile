@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
-import * as Keychain from "react-native-keychain";
+import { clearAll } from "../services/utils/storage";
+import { useToast } from "native-base";
 
 const AuthContext = createContext();
 
@@ -7,15 +8,15 @@ const AuthContextProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     isAuthenticated: false,
     accessToken: null,
-    refreshToken: null,
+    refreshToken: null
   });
 
   const logout = async () => {
-    await Keychain.resetGenericPassword();
+    await clearAll();
     setAuthState({
       isAuthenticated: false,
       accessToken: null,
-      refreshToken: null,
+      refreshToken: null
     });
   };
 
@@ -29,7 +30,7 @@ const AuthContextProvider = ({ children }) => {
         authState,
         getAccessToken,
         setAuthState,
-        logout,
+        logout
       }}
     >
       {children}
