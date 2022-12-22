@@ -7,7 +7,6 @@ import { storeObjectData } from "../../../utils/storage";
 import { getError } from "../../../utils/error";
 import { ituEmailRegexCheck } from "../../../utils/basicUtils";
 
-//TODO: Add register logic, validation and error handling
 export const Register = ({ navigation }) => {
   const [formData, setFormData] = useState({
     username: "",
@@ -65,7 +64,6 @@ export const Register = ({ navigation }) => {
         });
       }
     } catch (error) {
-      console.log(error);
       getError(error, "Login Failed", toast);
     }
   };
