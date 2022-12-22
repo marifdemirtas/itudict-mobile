@@ -8,6 +8,8 @@ import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
 import { getError } from "../utils/error";
+import { AxiosContext } from "../contexts/AxiosContext";
+import { backendApi } from "../utils/urls";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -15,9 +17,7 @@ const initialLayout = {
   width: Dimensions.get("window").width
 };
 
-const CustomizedTabBar = ({ state, descriptors, navigation, position, authContext }) => {
-  const authContext = useContext(AuthContext);
-  const { authAxios } = useContext(AxiosContext);
+const CustomizedTabBar = ({ state, descriptors, navigation, position, authContext, authAxios }) => {
   const toast = useToast();
 
   const handleLogout = async () => {
@@ -88,8 +88,9 @@ const CustomizedTabBar = ({ state, descriptors, navigation, position, authContex
 
 export const HomeTabs = () => {
   const authContext = useContext(AuthContext);
+  const { authAxios } = useContext(AxiosContext);
   return (
-    <Tab.Navigator tabBar={(props) => <CustomizedTabBar {...props} authContext={authContext} />} initialLayout={initialLayout}>
+    <Tab.Navigator tabBar={(props) => <CustomizedTabBar {...props} authContext={authContext} authAxios={authAxios} />} initialLayout={initialLayout}>
       <Tab.Screen name="Latest" component={LatestNavigator} />
       <Tab.Screen name="Popular" component={PopularNavigator} />
       <Tab.Screen name="My Profile" component={ProfileNavigator} />
