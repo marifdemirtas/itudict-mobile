@@ -1,55 +1,61 @@
 import { useState, useContext } from "react";
-import { Box, Heading, VStack, FormControl, Input, Button, Center, Text, Flex, Link, Spacer, useToast } from "native-base";
+import { Box, Heading, VStack, FormControl, Input, Button, Center, Text, Link, Spacer, useToast, WarningOutlineIcon } from "native-base";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { backendApi } from "../../../utils/urls";
-import { ToastAlert } from "../../../components/common/ToastAlert";
 import { AxiosContext } from "../../../contexts/AxiosContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { storeObjectData } from "../../../utils/storage";
 import { getError } from "../../../utils/error";
+import { ituEmailRegexCheck } from "../../../utils/basicUtils";
 
-//TODO: Add validation and error handling
 export const Login = ({ navigation }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
+  const [isInvalid, setIsInvalid] = useState({
+    email: false,
+    password: false
+  });
+
   const toast = useToast();
   const authContext = useContext(AuthContext);
   const { publicAxios } = useContext(AxiosContext);
 
   const handleLogin = async () => {
-    const { email, password } = formData;
-    if (email === "Admin" && password === "Admin") {
-      authContext.setAuthState({
-        isAuthenticated: true,
-        accessToken: email,
-        refreshToken: password
-      });
+    const isValid_ = {
+      email: false,
+      password: false
+    };
+    if (!ituEmailRegexCheck(formData.email)) {
+      isValid_.email = true;
+    }
+    if (formData.password.length < 6) {
+      isValid_.password = true;
     }
 
-    // try {
-    //   const response = await publicAxios.post(backendApi.login, {
-    //     email,
-    //     password
-    //   });
+    if (Object.values(isValid_).includes(true)) {
+      setIsInvalid(isValid_);
+      return;
+    }
 
-    //   if (response?.data) {
-    //     authContext.setAuthState({
-    //       accessToken: response.data.accessToken,
-    //       refreshToken: response.data.refreshToken,
-    //       isAuthenticated: true
-    //     });
+    try {
+      const response = await publicAxios.post(backendApi.login, formData);
 
-    //     await storeObjectData("token", {
-    //       accessToken: response.data.accessToken,
-    //       refreshToken: response.data.refreshToken
-    //     });
-    //   }
-    // } catch (error) {
-    //   getError(error, "Login Failed", toast)
-    //   });
-    // }
+      if (response?.data) {
+        authContext.setAuthState({
+          accessToken: response.data.accessToken,
+          refreshToken: response.data.refreshToken,
+          isAuthenticated: true
+        });
+
+        await storeObjectData("token", {
+          accessToken: response.data.accessToken,
+          refreshToken: response.data.refreshToken
+        });
+      }
+    } catch (error) {
+      getError(error, "Login Failed", toast);
+    }
   };
 
   return (
@@ -71,16 +77,24 @@ export const Login = ({ navigation }) => {
           </Heading>
         </Center>
         <VStack space={6} mt="5">
-          <FormControl>
+          <FormControl isInvalid={isInvalid.email}>
             <Input placeholder="Enter your ITU email" onChangeText={(value) => setFormData({ ...formData, email: value })} />
+            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>Please enter your ITU email</FormControl.ErrorMessage>
           </FormControl>
-          <FormControl>
+          <FormControl isInvalid={isInvalid.password}>
             <Input type="password" placeholder="Enter your password" onChangeText={(value) => setFormData({ ...formData, password: value })} />
+            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>Password must be at least 6 characters</FormControl.ErrorMessage>
           </FormControl>
         </VStack>
       </Box>
       <Box p="3" w="100%" maxW="290" px="0">
-        <Button bg="darkBlue.100" _text={{ color: "black", bold: "true" }} w="50%" onPress={handleLogin}>
+        <Button
+          bg="darkBlue.100"
+          _text={{ color: "black", bold: "true" }}
+          w="50%"
+          onPress={handleLogin}
+          isDisabled={formData.email.length === 0 || formData.password.length === 0}
+        >
           LOGIN
         </Button>
       </Box>

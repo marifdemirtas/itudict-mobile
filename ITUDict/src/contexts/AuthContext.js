@@ -24,11 +24,16 @@ const AuthContextProvider = ({ children }) => {
     return authState.accessToken;
   };
 
+  const getRefreshToken = () => {
+    return authState.refreshToken;
+  };
+
   return (
     <AuthContext.Provider
       value={{
         authState,
         getAccessToken,
+        getRefreshToken,
         setAuthState,
         logout
       }}

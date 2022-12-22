@@ -1,5 +1,5 @@
 import { Dimensions, TouchableOpacity, Animated } from "react-native";
-import { Box, Center, IconButton } from "native-base";
+import { Box, Center, IconButton, useToast } from "native-base";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { LatestNavigator } from "./LatestNavigator";
 import { PopularNavigator } from "./PopularNavigator";
@@ -7,6 +7,7 @@ import { ProfileNavigator } from "./ProfileNavigator";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
+import { getError } from "../utils/error";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -15,6 +16,19 @@ const initialLayout = {
 };
 
 const CustomizedTabBar = ({ state, descriptors, navigation, position, authContext }) => {
+  const authContext = useContext(AuthContext);
+  const { authAxios } = useContext(AxiosContext);
+  const toast = useToast();
+
+  const handleLogout = async () => {
+    try {
+      await authAxios.get(backendApi.logout);
+      authContext.logout();
+    } catch (error) {
+      getError(error, "Logout Failed", toast);
+    }
+  };
+
   return (
     <Center width="100%" bg="dark.100" paddingTop="10%">
       <Box
@@ -66,7 +80,7 @@ const CustomizedTabBar = ({ state, descriptors, navigation, position, authContex
             </Box>
           );
         })}
-        <IconButton onPress={() => authContext.logout()} _icon={{ as: FontAwesome, name: "sign-out", color: "darkBlue.100" }} />
+        <IconButton onPress={handleLogout} _icon={{ as: FontAwesome, name: "sign-out", color: "darkBlue.100" }} />
       </Box>
     </Center>
   );

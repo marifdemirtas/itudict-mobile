@@ -34,10 +34,10 @@ const AxiosContextProvider = ({ children }) => {
 
   const refreshAuthLogic = async (failedRequest) => {
     const options = {
-      method: "POST",
+      method: "GET",
       url: `${BACKEND_API_URL}${backendApi.refresh}`,
-      data: {
-        refreshToken: authContext.authState.refreshToken
+      headers: {
+        Authorization: `Bearer ${authContext.getRefreshToken()}`
       }
     };
     try {
@@ -46,7 +46,8 @@ const AxiosContextProvider = ({ children }) => {
 
       authContext.setAuthState({
         ...authContext.authState,
-        accessToken: tokenRefreshResponse.data.accessToken
+        accessToken: tokenRefreshResponse.data.accessToken,
+        refreshToken: tokenRefreshResponse.data.refreshToken
       });
 
       await storeObjectData("token", {
