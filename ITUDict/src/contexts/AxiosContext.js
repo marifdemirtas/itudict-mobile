@@ -33,6 +33,7 @@ const AxiosContextProvider = ({ children }) => {
   );
 
   const refreshAuthLogic = async (failedRequest) => {
+    console.log("refreshAuthLogic");
     const options = {
       method: "GET",
       url: `${BACKEND_API_URL}${backendApi.refresh}`,
@@ -64,7 +65,7 @@ const AxiosContextProvider = ({ children }) => {
     }
   };
 
-  createAuthRefreshInterceptor(authAxios, refreshAuthLogic);
+  createAuthRefreshInterceptor(authAxios, refreshAuthLogic, { pauseInstanceWhileRefreshing: true, statusCodes: [401, 403] });
 
   return <AxiosContext.Provider value={{ authAxios, publicAxios }}>{children}</AxiosContext.Provider>;
 };
