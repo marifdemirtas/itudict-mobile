@@ -33,6 +33,7 @@ const AxiosContextProvider = ({ children }) => {
   );
 
   const refreshAuthLogic = async (failedRequest) => {
+    console.log("refreshAuthLogic");
     const options = {
       method: "GET",
       url: `${BACKEND_API_URL}${backendApi.refresh}`,
