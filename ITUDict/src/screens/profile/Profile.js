@@ -8,8 +8,9 @@ import { getError } from "../../utils/error";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
 import { Loading } from "../../components/common/Loading";
+import { Pressable } from "react-native";
 
-export const Profile = ({ route }) => {
+export const Profile = ({ route, navigation }) => {
   const [page, setPage] = useState({
     currentPage: 1,
     totalPage: 1,
@@ -34,6 +35,7 @@ export const Profile = ({ route }) => {
         user_.email = response.data.email;
         user_.joined = new Date(response.data.createdAt).toDateString();
         setUser(user_);
+        fetchComments(user_.id);
       }
     } catch (error) {
       getError(error, "Failed to fetch user", toast);
@@ -75,12 +77,17 @@ export const Profile = ({ route }) => {
             email: route.params?.email,
             joined: new Date(route.params?.joined).toDateString()
           });
+          fetchComments(route.params?.id);
         } else {
           fetchCurrentUser();
         }
       }
     }, [route.params?.username, page.currentPage])
   );
+
+  const handleTopicClick = (topicId, title) => {
+    navigation.navigate("TopicPage", { topic: { _id: topicId, title: title } });
+  };
 
   return (
     <>
@@ -110,9 +117,12 @@ export const Profile = ({ route }) => {
             {data.map((entry) => (
               <Box borderColor="muted.400" py="2%" px="4%" key={entry._id}>
                 <HStack justifyContent="space-between">
-                  <Text fontSize="lg" color="darkBlue.100" bold>
-                    {entry.title}
-                  </Text>
+                  <Pressable onPress={() => handleTopicClick(entry.topicId, entry.title)}>
+                    <Text fontSize="lg" color="darkBlue.100" bold>
+                      {entry.title}
+                    </Text>
+                  </Pressable>
+
                   <Text fontSize="xs" color="muted.400" pr="2%">
                     {new Date(entry.createdAt).toDateString()}
                   </Text>
