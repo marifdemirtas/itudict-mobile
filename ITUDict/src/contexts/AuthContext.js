@@ -9,7 +9,8 @@ const AuthContextProvider = ({ children }) => {
     isAuthenticated: false,
     role: null,
     accessToken: null,
-    refreshToken: null
+    refreshToken: null,
+    email: null
   });
 
   const logout = async () => {

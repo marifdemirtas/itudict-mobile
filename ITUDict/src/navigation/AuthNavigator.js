@@ -1,6 +1,5 @@
 import { useContext, useState, useCallback, useEffect } from "react";
 import { Login } from "../screens/auth/login/Login";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "../contexts/AuthContext";

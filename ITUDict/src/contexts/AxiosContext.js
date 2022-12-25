@@ -4,7 +4,7 @@ import { AuthContext } from "./AuthContext";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 import { BACKEND_API_URL } from "../utils/constants";
 import { backendApi } from "../utils/urls";
-import { clearAll, storeObjectData } from "../utils/storage";
+import { clearAll, getObjectData, storeObjectData } from "../utils/storage";
 
 const AxiosContext = createContext();
 
@@ -20,10 +20,9 @@ const AxiosContextProvider = ({ children }) => {
   });
 
   authAxios.interceptors.request.use(
-    (config) => {
-      if (!config.headers.Authorization) {
-        config.headers.Authorization = `Bearer ${authContext.getAccessToken()}`;
-      }
+    async (config) => {
+      const accessToken = await getObjectData("token");
+      config.headers.Authorization = `Bearer ${accessToken.accessToken}`;
 
       return config;
     },
@@ -42,7 +41,6 @@ const AxiosContextProvider = ({ children }) => {
     };
     try {
       const tokenRefreshResponse = await axios(options);
-      failedRequest.response.config.headers.Authorization = "Bearer " + tokenRefreshResponse.data.accessToken;
       authContext.setAuthState({
         ...authContext.authState,
         accessToken: tokenRefreshResponse.data.accessToken,
@@ -55,6 +53,7 @@ const AxiosContextProvider = ({ children }) => {
         role: authContext.authState.role,
         email: authContext.authState.email
       });
+      failedRequest.response.config.headers.Authorization = "Bearer " + tokenRefreshResponse.data.accessToken;
       return await Promise.resolve();
     } catch (e) {
       authContext.setAuthState({
@@ -68,7 +67,7 @@ const AxiosContextProvider = ({ children }) => {
     }
   };
 
-  createAuthRefreshInterceptor(authAxios, refreshAuthLogic, { pauseInstanceWhileRefreshing: true, statusCodes: [401, 403] });
+  createAuthRefreshInterceptor(authAxios, refreshAuthLogic, { pauseInstanceWhileRefreshing: true });
 
   return <AxiosContext.Provider value={{ authAxios, publicAxios }}>{children}</AxiosContext.Provider>;
 };
