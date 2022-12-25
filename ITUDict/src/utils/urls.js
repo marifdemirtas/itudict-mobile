@@ -17,6 +17,12 @@ export const backendApi = {
     },
     getByOwner: (id, page, limit) => {
       return "/comment/owner/" + id + "/" + page + "/" + limit + "/";
+    },
+    like: (id) => {
+      return "/comment/like/" + id;
+    },
+    dislike: (id) => {
+      return "/comment/dislike/" + id;
     }
   },
   user: {

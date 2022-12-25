@@ -1,13 +1,15 @@
 import { Heading, HStack, IconButton, VStack, Box, Text, ScrollView, useToast } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { Pagination } from "../../components/common/Pagination";
-import { useState, useContext, useEffect, useCallback } from "react";
+import { useState, useContext, useCallback } from "react";
 import { Pressable } from "react-native";
 import { AxiosContext } from "../../contexts/AxiosContext";
 import { backendApi } from "../../utils/urls";
 import { getError } from "../../utils/error";
 import { Loading } from "../../components/common/Loading";
 import { CreateComment } from "../../components/feed/CreateComment";
+import { useFocusEffect } from "@react-navigation/native";
+import React from "react";
 
 export const TopicPage = ({ route, navigation }) => {
   const [page, setPage] = useState({
@@ -29,7 +31,7 @@ export const TopicPage = ({ route, navigation }) => {
       setIsLoading(true);
       const response = await authAxios.get(backendApi.comment.getByTopic(route.params.topic._id, page.currentPage - 1, 10));
       if (response?.data) {
-        const comments = response.data.comments.map((item) => {
+        const comments = response.data?.comments?.map((item) => {
           let _item = { ...item };
           _item.ownerId = item.owner._id;
           _item.ownerUsername = item.owner.username;
@@ -50,9 +52,45 @@ export const TopicPage = ({ route, navigation }) => {
     }
   }, [page.currentPage]);
 
-  useEffect(() => {
-    fetchTopicComments();
-  }, [page.currentPage]);
+  const likeComment = async (commentId) => {
+    try {
+      const response = await authAxios.post(backendApi.comment.like(commentId));
+      if (response?.data) {
+        const _data = data.map((item) => {
+          if (item._id === commentId) {
+            return { ...item, likes: response.data.likes, dislikes: response.data.dislikes };
+          }
+          return item;
+        });
+        setData(_data);
+      }
+    } catch (error) {
+      getError(error, "Failed to like comment", toast);
+    }
+  };
+
+  const dislikeComment = async (commentId) => {
+    try {
+      const response = await authAxios.post(backendApi.comment.dislike(commentId));
+      if (response?.data) {
+        const _data = data.map((item) => {
+          if (item._id === commentId) {
+            return { ...item, likes: response.data.likes, dislikes: response.data.dislikes };
+          }
+          return item;
+        });
+        setData(_data);
+      }
+    } catch (error) {
+      getError(error, "Failed to dislike comment", toast);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchTopicComments();
+    }, [page.currentPage])
+  );
 
   return (
     <>
@@ -88,9 +126,21 @@ export const TopicPage = ({ route, navigation }) => {
 
                   <Text color="white">{item.content}</Text>
                   <HStack justifyContent="space-between">
-                    <HStack>
-                      <IconButton key="like" _icon={{ as: AntDesign, name: "arrowup", color: "darkBlue.100" }} />
-                      <IconButton key="dislike" _icon={{ as: AntDesign, name: "arrowdown", color: "darkBlue.100" }} />
+                    <HStack alignItems="center">
+                      <IconButton
+                        key="like"
+                        _icon={{ as: AntDesign, name: "arrowup", color: "darkBlue.100" }}
+                        onPress={() => likeComment(item._id)}
+                      />
+                      <Text color="muted.400">{item.likes}</Text>
+                      <IconButton
+                        key="dislike"
+                        _icon={{ as: AntDesign, name: "arrowdown", color: "darkBlue.100" }}
+                        onPress={() => dislikeComment(item._id)}
+                      />
+                      <Text textAlign={"center"} color="muted.400">
+                        {item.dislikes}
+                      </Text>
                     </HStack>
                     <Text fontSize="xs" color="muted.400" mr="2%">
                       {item.createdAt}
