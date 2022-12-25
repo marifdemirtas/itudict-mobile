@@ -7,6 +7,7 @@ const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     isAuthenticated: false,
+    role: null,
     accessToken: null,
     refreshToken: null
   });
@@ -15,6 +16,7 @@ const AuthContextProvider = ({ children }) => {
     await clearAll();
     setAuthState({
       isAuthenticated: false,
+      role: null,
       accessToken: null,
       refreshToken: null
     });
@@ -28,12 +30,17 @@ const AuthContextProvider = ({ children }) => {
     return authState.refreshToken;
   };
 
+  const getRole = () => {
+    return authState.role;
+  };
+
   return (
     <AuthContext.Provider
       value={{
         authState,
         getAccessToken,
         getRefreshToken,
+        getRole,
         setAuthState,
         logout
       }}

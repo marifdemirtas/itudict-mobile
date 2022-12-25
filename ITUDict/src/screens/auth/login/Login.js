@@ -39,13 +39,14 @@ export const Login = ({ navigation }) => {
     }
 
     try {
-      const response = await publicAxios.post(backendApi.login, formData);
+      const response = await publicAxios.post(backendApi.auth.login, formData);
 
       if (response?.data) {
         authContext.setAuthState({
           accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken,
-          isAuthenticated: true
+          isAuthenticated: true,
+          role: response.data.role
         });
 
         await storeObjectData("token", {

@@ -22,7 +22,7 @@ const CustomizedTabBar = ({ state, descriptors, navigation, position, authContex
 
   const handleLogout = async () => {
     try {
-      await authAxios.get(backendApi.logout);
+      await authAxios.get(backendApi.auth.logout);
       authContext.logout();
     } catch (error) {
       getError(error, "Logout Failed", toast);

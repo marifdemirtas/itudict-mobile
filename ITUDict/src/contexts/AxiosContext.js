@@ -36,7 +36,7 @@ const AxiosContextProvider = ({ children }) => {
     console.log("refreshAuthLogic");
     const options = {
       method: "GET",
-      url: `${BACKEND_API_URL}${backendApi.refresh}`,
+      url: `${BACKEND_API_URL}${backendApi.auth.refresh}`,
       headers: {
         Authorization: `Bearer ${authContext.getRefreshToken()}`
       }
@@ -60,7 +60,8 @@ const AxiosContextProvider = ({ children }) => {
       authContext.setAuthState({
         accessToken: null,
         refreshToken: null,
-        isAuthenticated: false
+        isAuthenticated: false,
+        role: null
       });
     }
   };
