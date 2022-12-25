@@ -33,11 +33,11 @@ export const TopicPage = ({ route, navigation }) => {
       if (response?.data) {
         const comments = response.data?.comments?.map((item) => {
           let _item = { ...item };
-          _item.ownerId = item.owner._id;
-          _item.ownerUsername = item.owner.username;
-          _item.ownerRole = item.owner.role;
-          _item.ownerEmail = item.owner.email;
-          _item.ownerJoined = item.owner.createdAt;
+          _item.ownerId = item?.owner?._id;
+          _item.ownerUsername = item?.owner?.username;
+          _item.ownerRole = item?.owner?.role;
+          _item.ownerEmail = item?.owner?.email;
+          _item.ownerJoined = item?.owner?.createdAt;
           _item.createdAt = new Date(item.createdAt).toDateString();
           delete _item.owner;
           return _item;
