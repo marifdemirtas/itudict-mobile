@@ -18,7 +18,8 @@ const AuthContextProvider = ({ children }) => {
       isAuthenticated: false,
       role: null,
       accessToken: null,
-      refreshToken: null
+      refreshToken: null,
+      email: null
     });
   };
 
@@ -34,6 +35,10 @@ const AuthContextProvider = ({ children }) => {
     return authState.role;
   };
 
+  const getEmail = () => {
+    return authState.email;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -41,6 +46,7 @@ const AuthContextProvider = ({ children }) => {
         getAccessToken,
         getRefreshToken,
         getRole,
+        getEmail,
         setAuthState,
         logout
       }}

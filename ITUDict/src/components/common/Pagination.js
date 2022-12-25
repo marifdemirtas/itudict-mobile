@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { HStack, IconButton, Input, ChevronLeftIcon, ChevronRightIcon, Text, Button } from "native-base";
 
-export const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
+export const Pagination = ({ currentPage, totalPage, setCurrentPage, fetch }) => {
   const [page, setPage] = useState(currentPage);
   const [pageInput, setPageInput] = useState(currentPage);
 
   const handlePageChange = (page) => {
-    if (page > 0 && page <= totalPages) {
+    if (page > 1 && page <= totalPage) {
       setCurrentPage(page);
       setPage(page);
       setPageInput(page);
-    } else if (page > totalPages) {
-      setCurrentPage(totalPages);
-      setPage(totalPages);
-      setPageInput(totalPages);
+    } else if (page > totalPage) {
+      setCurrentPage(totalPage);
+      setPage(totalPage);
+      setPageInput(totalPage);
     } else {
       setCurrentPage(1);
       setPage(1);
@@ -51,16 +51,15 @@ export const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
         borderColor="black"
         borderWidth="1"
         _text={{ color: "black" }}
-        onPress={() => handlePageChange(totalPages)}
+        onPress={() => handlePageChange(totalPage)}
       >
-        {totalPages}
+        {totalPage}
       </Button>
       <IconButton
         icon={<ChevronRightIcon />}
         _icon={{ color: "darkBlue.100" }}
         onPress={() => {
           handlePageChange(page + 1);
-          this.scroll;
         }}
       />
     </HStack>

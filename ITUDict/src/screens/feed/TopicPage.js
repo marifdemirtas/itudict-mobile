@@ -1,96 +1,111 @@
-import { Center, Heading, HStack, IconButton, VStack, Box, Text, ScrollView, TextArea, Button, Spacer } from "native-base";
+import { Heading, HStack, IconButton, VStack, Box, Text, ScrollView, useToast } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { Pagination } from "../../components/common/Pagination";
-import { useState } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import { Pressable } from "react-native";
+import { AxiosContext } from "../../contexts/AxiosContext";
+import { backendApi } from "../../utils/urls";
+import { getError } from "../../utils/error";
+import { Loading } from "../../components/common/Loading";
+import { CreateComment } from "../../components/feed/CreateComment";
 
 export const TopicPage = ({ route, navigation }) => {
   const [page, setPage] = useState({
     currentPage: 1,
-    totalPages: 5
+    totalPage: 1,
+    totalCount: 1
   });
-  const [textAreaValue, setTextAreaValue] = useState("");
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { authAxios } = useContext(AxiosContext);
+  const toast = useToast();
 
   const setCurrentPage = (page_) => {
     setPage({ ...page, currentPage: page_ });
   };
 
-  const data = [
-    {
-      id: 1,
-      author: { username: "johndoe", rank: "Senior" },
-      published: "2021-01-01",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
-    },
-    {
-      id: 2,
-      author: { username: "jane_doe", rank: "Junior" },
-      published: "2021-01-01",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
-    },
-    {
-      id: 3,
-      author: { username: "oozkanome_31", rank: "Senior" },
-      published: "2021-01-01",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+  const fetchTopicComments = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await authAxios.get(backendApi.comment.getByTopic(route.params.topic._id, page.currentPage - 1, 10));
+      if (response?.data) {
+        const comments = response.data.comments.map((item) => {
+          let _item = { ...item };
+          _item.ownerId = item.owner._id;
+          _item.ownerUsername = item.owner.username;
+          _item.ownerRole = item.owner.role;
+          _item.ownerEmail = item.owner.email;
+          _item.ownerJoined = item.owner.createdAt;
+          _item.createdAt = new Date(item.createdAt).toDateString();
+          delete _item.owner;
+          return _item;
+        });
+        setData(comments);
+        setPage({ ...page, totalCount: response.data.count, totalPage: Math.ceil(response.data.count / 10) });
+      }
+    } catch (error) {
+      getError(error, "Failed to fetch comments", toast);
+    } finally {
+      setIsLoading(false);
     }
-  ];
-  return (
-    <Center bg="dark.100" w="100%" h="100%">
-      <ScrollView>
-        <Heading color="darkBlue.100" ml="5%" mt="5%">
-          {route.params.topic.topic}
-        </Heading>
-        {data.map((item, index) => (
-          <Box borderBottomWidth="1" borderColor="muted.400" py="4%" key={index}>
-            <VStack key={index} mx="5%" justifyContent="space-around">
-              <Pressable onPress={() => navigation.navigate("UserProfile", { username: item.author.username })}>
-                <Text color="darkBlue.100" fontSize="md" mb="-1%">
-                  {item.author.username}
-                </Text>
-                <Text color="muted.400" fontSize="xs" mb="1%">
-                  {item.author.rank}
-                </Text>
-              </Pressable>
+  }, [page.currentPage]);
 
-              <Text color="white">{item.comment}</Text>
-              <HStack justifyContent="space-between">
-                <HStack>
-                  <IconButton key="like" _icon={{ as: AntDesign, name: "arrowup", color: "darkBlue.100" }} />
-                  <IconButton key="dislike" _icon={{ as: AntDesign, name: "arrowdown", color: "darkBlue.100" }} />
-                </HStack>
-                <Text fontSize="xs" color="muted.400" mr="2%">
-                  {item.published}
-                </Text>
-              </HStack>
-            </VStack>
-          </Box>
-        ))}
-        {page.currentPage === page.totalPages && (
-          <Box alignItems="center" w="100%" my="8%">
-            <VStack w="85%" space={3}>
-              <TextArea
-                size="md"
-                h={150}
-                placeholder="Write an entry..."
-                bg="muted.400"
-                color="black"
-                _focus={{ borderColor: "darkBlue.100", backgroundColor: "muted.400", color: "black" }}
-                value={textAreaValue}
-                onChange={(e) => setTextAreaValue(e.currentTarget.value)}
-                onChangeText={(text) => setTextAreaValue(text)}
-              />
-              <Button marginLeft="auto" w="35%" textAlign="center" bg="dark.100" borderColor="darkBlue.100" borderWidth="1">
-                Submit
-              </Button>
-            </VStack>
-          </Box>
-        )}
-        <Pagination totalPages={page.totalPages} currentPage={page.currentPage} setCurrentPage={setCurrentPage} />
-      </ScrollView>
-    </Center>
+  useEffect(() => {
+    fetchTopicComments();
+  }, [page.currentPage]);
+
+  return (
+    <>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <Box bg="dark.100" w="100%" h="100%">
+          <ScrollView>
+            <Heading color="darkBlue.100" ml="6%" mt="5%">
+              {route.params.topic.title}
+            </Heading>
+            {data.map((item, index) => (
+              <Box borderBottomWidth="1" borderColor="muted.400" py="4%" key={index}>
+                <VStack key={index} mx="5%" justifyContent="space-around">
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate("UserProfile", {
+                        username: item.ownerUsername,
+                        email: item.ownerEmail,
+                        joined: item.ownerJoined,
+                        role: item.ownerRole,
+                        id: item.ownerId
+                      })
+                    }
+                  >
+                    <Text color="darkBlue.100" fontSize="md" mb="-1%">
+                      {item.ownerUsername}
+                    </Text>
+                    <Text color="muted.400" fontSize="xs" mb="1%">
+                      {item.ownerRole}
+                    </Text>
+                  </Pressable>
+
+                  <Text color="white">{item.content}</Text>
+                  <HStack justifyContent="space-between">
+                    <HStack>
+                      <IconButton key="like" _icon={{ as: AntDesign, name: "arrowup", color: "darkBlue.100" }} />
+                      <IconButton key="dislike" _icon={{ as: AntDesign, name: "arrowdown", color: "darkBlue.100" }} />
+                    </HStack>
+                    <Text fontSize="xs" color="muted.400" mr="2%">
+                      {item.createdAt}
+                    </Text>
+                  </HStack>
+                </VStack>
+              </Box>
+            ))}
+            {(page.currentPage === page.totalPage || page.totalCount === 0) && (
+              <CreateComment topicId={route.params.topic._id} title={route.params.topic.title} fetchTopicComments={fetchTopicComments} />
+            )}
+            {page.totalPage > 1 && <Pagination currentPage={page.currentPage} totalPage={page.totalPage} setCurrentPage={setCurrentPage} />}
+          </ScrollView>
+        </Box>
+      )}
+    </>
   );
 };

@@ -22,6 +22,8 @@ export const AuthNavigator = () => {
         authContext.setAuthState({
           accessToken: jwt.accessToken || null,
           refreshToken: jwt.refreshToken || null,
+          role: jwt.role || null,
+          email: jwt.email || null,
           isAuthenticated: jwt.accessToken !== null
         });
         setStatus("success");
@@ -33,7 +35,9 @@ export const AuthNavigator = () => {
       authContext.setAuthState({
         accessToken: null,
         refreshToken: null,
-        isAuthenticated: false
+        isAuthenticated: false,
+        role: null,
+        email: null
       });
     }
   }, []);

@@ -1,4 +1,3 @@
-//TODO: After backend is ready, change the api uri's to the backend api uri's
 export const backendApi = {
   auth: {
     login: "/auth/signin/",
@@ -7,8 +6,23 @@ export const backendApi = {
     refresh: "/auth/refresh/"
   },
   topic: {
-    create: "/topic/create/",
+    create: "/topic/create",
     latest: "/topic/latest/",
     popular: "/topic/popular/"
+  },
+  comment: {
+    create: "/comment/create/",
+    getByTopic: (topicId, page, limit) => {
+      return "/comment/topic/" + topicId + "/" + page + "/" + limit + "/";
+    },
+    getByOwner: (id, page, limit) => {
+      return "/comment/owner/" + id + "/" + page + "/" + limit + "/";
+    }
+  },
+  user: {
+    get: "/user/",
+    find: (email) => {
+      return "/user/find/" + email;
+    }
   }
 };

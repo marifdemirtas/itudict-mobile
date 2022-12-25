@@ -1,87 +1,131 @@
-import { Box, Text, Avatar, HStack, ScrollView } from "native-base";
+import { Box, Text, Avatar, HStack, ScrollView, useToast } from "native-base";
 import dummyAvatar from "../../../assets/dummy-avatar.png";
-import { useState } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { Pagination } from "../../components/common/Pagination";
+import { AxiosContext } from "../../contexts/AxiosContext";
+import { backendApi } from "../../utils/urls";
+import { getError } from "../../utils/error";
+import { AuthContext } from "../../contexts/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
+import { Loading } from "../../components/common/Loading";
 
 export const Profile = ({ route }) => {
   const [page, setPage] = useState({
     currentPage: 1,
-    totalPages: 5
+    totalPage: 1,
+    totalCount: 1
   });
+  const [user, setUser] = useState(null);
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const authContext = useContext(AuthContext);
+  const { authAxios } = useContext(AxiosContext);
+  const toast = useToast();
 
-  //TODO: Fetch data from backend with route params
+  const fetchCurrentUser = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await authAxios.get(backendApi.user.find(authContext.getEmail()));
+      if (response?.data) {
+        let user_ = {};
+        user_.username = response.data.username;
+        user_.role = response.data.role;
+        user_.id = response.data._id;
+        user_.email = response.data.email;
+        user_.joined = new Date(response.data.createdAt).toDateString();
+        setUser(user_);
+      }
+    } catch (error) {
+      getError(error, "Failed to fetch user", toast);
+    }
+  }, []);
+
+  const fetchComments = useCallback(
+    async (userId) => {
+      try {
+        setIsLoading(true);
+        const response = await authAxios.get(backendApi.comment.getByOwner(userId, page.currentPage - 1, 10));
+        if (response?.data) {
+          setData(response.data.comments);
+          setPage({ ...page, totalCount: response.data.count, totalPage: Math.ceil(response.data.count / 10) });
+        }
+      } catch (error) {
+        getError(error, "Failed to fetch comments", toast);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [page.currentPage]
+  );
 
   const setCurrentPage = (page_) => {
     setPage({ ...page, currentPage: page_ });
   };
 
-  const user = {
-    name: "John Doe",
-    username: "canerce99",
-    avatar: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    registerDate: "01/01/2022",
-    rank: "Senior",
-    entries: [
-      {
-        id: 1,
-        topic: "React Native",
-        date: "14/01/2022",
-        comment:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
-      },
-      {
-        id: 2,
-        topic: "Sweephy",
-        date: "14/01/2022",
-        comment:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
-      },
-      {
-        id: 3,
-        topic: "Sweephy",
-        date: "14/01/2022",
-        comment:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet tincidunt ex. Morbi metus quam, egestas molestie erat id, elementum consequat sem. Fusce in accumsan purus, eu suscipit tellus. Mauris vestibulum est sollicitudin, accumsan erat blandit, fringilla augue. Suspendisse quis scelerisque velit. Sed et ante felis. Proin nec consequat metus. Morbi eget nulla et diam congue auctor nec a nunc. Vivamus faucibus elit metus, accumsan ultricies eros pellentesque et. Nam porttitor mi ac urna ullamcorper, et tincidunt metus feugiat. Suspendisse est dui, commodo a laoreet quis, blandit at arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+  useFocusEffect(
+    React.useCallback(() => {
+      if (user?.id) {
+        fetchComments(user.id);
+      } else {
+        if (route.params?.username) {
+          setUser({
+            username: route.params?.username,
+            role: route.params?.role,
+            id: route.params?.id,
+            email: route.params?.email,
+            joined: new Date(route.params?.joined).toDateString()
+          });
+        } else {
+          fetchCurrentUser();
+        }
       }
-    ]
-  };
+    }, [route.params?.username, page.currentPage])
+  );
 
   return (
-    <ScrollView w="100%" h="100%" bg="dark.100">
-      <Box mb="4%" pt="8%" flex={1}>
-        <HStack justifyContent="flex-start" mx="6%" space={6}>
-          <Avatar size="xl" source={user.avatar ? { uri: user.avatar } : dummyAvatar} />
-          <Box>
-            <Text fontSize="2xl" color="darkBlue.100">
-              {user.username}
-            </Text>
-            <Text fontSize="md" color="muted.300">
-              {user.rank}
-            </Text>
-            <Text fontSize="xs" color="muted.400">
-              Joined {user.registerDate}
-            </Text>
-          </Box>
-        </HStack>
-      </Box>
-      <Box mb="8%">
-        {user.entries.map((entry) => (
-          <Box borderColor="muted.400" py="2%" px="4%" key={entry.id}>
-            <HStack justifyContent="space-between">
-              <Text fontSize="lg" color="darkBlue.100" bold>
-                {entry.topic}
-              </Text>
-              <Text fontSize="xs" color="muted.400" pr="2%">
-                {entry.date}
-              </Text>
+    <>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <ScrollView w="100%" h="100%" bg="dark.100">
+          <Box mb="4%" pt="8%" flex={1}>
+            <HStack justifyContent="flex-start" mx="6%" space={6}>
+              <Avatar size="xl" source={dummyAvatar} />
+              {user?.username && (
+                <Box>
+                  <Text fontSize="2xl" color="darkBlue.100">
+                    {user.username}
+                  </Text>
+                  <Text fontSize="md" color="muted.300">
+                    {user.role}
+                  </Text>
+                  <Text fontSize="xs" color="muted.400">
+                    Joined {user.joined}
+                  </Text>
+                </Box>
+              )}
             </HStack>
-            <Text fontSize="sm" color="white">
-              {entry.comment}
-            </Text>
           </Box>
-        ))}
-      </Box>
-      <Pagination currentPage={page.currentPage} setCurrentPage={setCurrentPage} totalPages={page.totalPages} />
-    </ScrollView>
+          <Box mb="8%">
+            {data.map((entry) => (
+              <Box borderColor="muted.400" py="2%" px="4%" key={entry._id}>
+                <HStack justifyContent="space-between">
+                  <Text fontSize="lg" color="darkBlue.100" bold>
+                    {entry.title}
+                  </Text>
+                  <Text fontSize="xs" color="muted.400" pr="2%">
+                    {new Date(entry.createdAt).toDateString()}
+                  </Text>
+                </HStack>
+                <Text fontSize="sm" color="white">
+                  {entry.content}
+                </Text>
+              </Box>
+            ))}
+          </Box>
+          {page.totalPage > 1 && <Pagination currentPage={page.currentPage} totalPage={page.totalPage} setCurrentPage={setCurrentPage} />}
+        </ScrollView>
+      )}
+    </>
   );
 };

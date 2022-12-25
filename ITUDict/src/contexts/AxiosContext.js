@@ -33,7 +33,6 @@ const AxiosContextProvider = ({ children }) => {
   );
 
   const refreshAuthLogic = async (failedRequest) => {
-    console.log("refreshAuthLogic");
     const options = {
       method: "GET",
       url: `${BACKEND_API_URL}${backendApi.auth.refresh}`,
@@ -53,7 +52,9 @@ const AxiosContextProvider = ({ children }) => {
 
       await storeObjectData("token", {
         accessToken: tokenRefreshResponse.data.accessToken,
-        refreshToken: authContext.authState.refreshToken
+        refreshToken: authContext.authState.refreshToken,
+        role: authContext.authState.role,
+        email: authContext.authState.email
       });
       return await Promise.resolve();
     } catch (e) {
@@ -61,7 +62,8 @@ const AxiosContextProvider = ({ children }) => {
         accessToken: null,
         refreshToken: null,
         isAuthenticated: false,
-        role: null
+        role: null,
+        email: null
       });
     }
   };

@@ -50,17 +50,21 @@ export const Register = ({ navigation }) => {
     }
 
     try {
-      const response = await publicAxios.post(backendApi.register, formData);
+      const response = await publicAxios.post(backendApi.auth.register, formData);
       if (response?.data) {
         authContext.setAuthState({
           accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken,
-          isAuthenticated: true
+          isAuthenticated: true,
+          role: response.data.role,
+          email: formData.email
         });
 
         await storeObjectData("token", {
           accessToken: response.data.accessToken,
-          refreshToken: response.data.refreshToken
+          refreshToken: response.data.refreshToken,
+          role: response.data.role,
+          email: formData.email
         });
       }
     } catch (error) {
