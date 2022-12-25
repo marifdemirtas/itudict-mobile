@@ -4,7 +4,7 @@ import { AuthContext } from "./AuthContext";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 import { BACKEND_API_URL } from "../utils/constants";
 import { backendApi } from "../utils/urls";
-import { storeObjectData } from "../utils/storage";
+import { clearAll, storeObjectData } from "../utils/storage";
 
 const AxiosContext = createContext();
 
@@ -27,7 +27,7 @@ const AxiosContextProvider = ({ children }) => {
 
       return config;
     },
-    async (error) => {
+    (error) => {
       return Promise.reject(error);
     }
   );
@@ -43,7 +43,6 @@ const AxiosContextProvider = ({ children }) => {
     try {
       const tokenRefreshResponse = await axios(options);
       failedRequest.response.config.headers.Authorization = "Bearer " + tokenRefreshResponse.data.accessToken;
-
       authContext.setAuthState({
         ...authContext.authState,
         accessToken: tokenRefreshResponse.data.accessToken,
@@ -52,7 +51,7 @@ const AxiosContextProvider = ({ children }) => {
 
       await storeObjectData("token", {
         accessToken: tokenRefreshResponse.data.accessToken,
-        refreshToken: authContext.authState.refreshToken,
+        refreshToken: tokenRefreshResponse.data.refreshToken,
         role: authContext.authState.role,
         email: authContext.authState.email
       });
@@ -65,6 +64,7 @@ const AxiosContextProvider = ({ children }) => {
         role: null,
         email: null
       });
+      clearAll();
     }
   };
 
