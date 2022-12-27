@@ -1,27 +1,11 @@
-import { useState, useContext, useEffect } from "react";
-import { AxiosContext } from "../../contexts/AxiosContext";
-import { backendApi } from "../../utils/urls";
-import { useToast, Box, VStack, TextArea, Button } from "native-base";
-import { getError } from "../../utils/error";
+import { useState } from "react";
+import { Box, VStack, TextArea, Button } from "native-base";
 
-export const CreateComment = ({ topicId, title, fetchTopicComments }) => {
+export const CreateComment = ({ handleCreateComment }) => {
   const [comment, setComment] = useState("");
-  const toast = useToast();
-  const { authAxios } = useContext(AxiosContext);
 
-  const createComment = async () => {
-    try {
-      const response = await authAxios.post(backendApi.comment.create, {
-        topicId: topicId,
-        title: title,
-        content: comment
-      });
-      if (response?.data) {
-        fetchTopicComments();
-      }
-    } catch (error) {
-      getError(error, "Failed to create comment", toast);
-    }
+  const onSubmit = async () => {
+    handleCreateComment(comment);
   };
 
   return (
@@ -38,7 +22,7 @@ export const CreateComment = ({ topicId, title, fetchTopicComments }) => {
           onChange={(e) => setComment(e.currentTarget.value)}
           onChangeText={(text) => setComment(text)}
         />
-        <Button marginLeft="auto" w="35%" textAlign="center" bg="dark.100" borderColor="darkBlue.100" borderWidth="1" onPress={createComment}>
+        <Button marginLeft="auto" w="35%" textAlign="center" bg="dark.100" borderColor="darkBlue.100" borderWidth="1" onPress={onSubmit}>
           Submit
         </Button>
       </VStack>

@@ -46,7 +46,7 @@ export const TopicPage = ({ route, navigation }) => {
         setPage({ ...page, totalCount: response.data.count, totalPage: Math.ceil(response.data.count / 10) });
       }
     } catch (error) {
-      getError(error, "Failed to fetch comments", toast);
+      getError(error?.response?.data?.message || "Failed to fetch comments", "Fetch Error", toast);
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +65,7 @@ export const TopicPage = ({ route, navigation }) => {
         setData(_data);
       }
     } catch (error) {
-      getError(error, "Failed to like comment", toast);
+      getError(error?.response?.data?.message || "Failed to like comment", "Network Error", toast);
     }
   };
 
@@ -82,7 +82,26 @@ export const TopicPage = ({ route, navigation }) => {
         setData(_data);
       }
     } catch (error) {
-      getError(error, "Failed to dislike comment", toast);
+      getError(error?.response?.data?.message || "Failed to dislike comment", "Network Error", toast);
+    }
+  };
+
+  const handleCreateComment = async (content) => {
+    try {
+      const response = await authAxios.post(backendApi.comment.create, {
+        topicId: route.params.topic._id,
+        title: route.params.topic.title,
+        content: content
+      });
+      if (response?.data) {
+        if (page.totalCount % 10 === 0) {
+          setPage((prev) => ({ ...prev, totalPage: prev.totalPage + 1, currentPage: prev.totalPage + 1 }));
+        } else {
+          fetchTopicComments();
+        }
+      }
+    } catch (error) {
+      getError(error?.response?.data?.message || "Failed to create comment", "Creation Error", toast);
     }
   };
 
@@ -149,9 +168,7 @@ export const TopicPage = ({ route, navigation }) => {
                 </VStack>
               </Box>
             ))}
-            {(page.currentPage === page.totalPage || page.totalCount === 0) && (
-              <CreateComment topicId={route.params.topic._id} title={route.params.topic.title} fetchTopicComments={fetchTopicComments} />
-            )}
+            {(page.currentPage === page.totalPage || page.totalCount === 0) && <CreateComment handleCreateComment={handleCreateComment} />}
             {page.totalPage > 1 && <Pagination currentPage={page.currentPage} totalPage={page.totalPage} setCurrentPage={setCurrentPage} />}
           </ScrollView>
         </Box>

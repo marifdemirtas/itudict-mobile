@@ -21,7 +21,7 @@ export const Popular = ({ navigation }) => {
         setData(response.data);
       }
     } catch (error) {
-      getError(error, "Failed to fetch popular topics", toast);
+      getError(error?.response?.data?.message || "Failed to fetch popular topics", "Fetch Error", toast);
     } finally {
       setIsLoading(false);
     }

@@ -21,7 +21,7 @@ export const Latest = ({ navigation }) => {
         setData(response.data);
       }
     } catch (error) {
-      getError(error, "Failed to fetch latest topics", toast);
+      getError(error?.response?.data?.message || "Failed to fetch latest topics", "Fetch Error", toast);
     } finally {
       setIsLoading(false);
     }
