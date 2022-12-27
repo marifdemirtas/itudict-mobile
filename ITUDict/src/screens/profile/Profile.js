@@ -38,7 +38,7 @@ export const Profile = ({ route, navigation }) => {
         fetchComments(user_.id);
       }
     } catch (error) {
-      getError(error, "Failed to fetch user", toast);
+      getError(error?.response?.data?.message || "Failed to fetch user", "Fetch Error", toast);
     }
   }, []);
 
@@ -52,7 +52,7 @@ export const Profile = ({ route, navigation }) => {
           setPage({ ...page, totalCount: response.data.count, totalPage: Math.ceil(response.data.count / 10) });
         }
       } catch (error) {
-        getError(error, "Failed to fetch comments", toast);
+        getError(error?.response?.data?.message || "Failed to fetch comments", "Fetch Error", toast);
       } finally {
         setIsLoading(false);
       }

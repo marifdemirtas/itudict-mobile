@@ -46,7 +46,7 @@ export const TopicPage = ({ route, navigation }) => {
         setPage({ ...page, totalCount: response.data.count, totalPage: Math.ceil(response.data.count / 10) });
       }
     } catch (error) {
-      getError(error, "Failed to fetch comments", toast);
+      getError(error?.response?.data?.message || "Failed to fetch comments", "Fetch Error", toast);
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +65,7 @@ export const TopicPage = ({ route, navigation }) => {
         setData(_data);
       }
     } catch (error) {
-      getError(error, "Failed to like comment", toast);
+      getError(error?.response?.data?.message || "Failed to like comment", "Network Error", toast);
     }
   };
 
@@ -82,7 +82,7 @@ export const TopicPage = ({ route, navigation }) => {
         setData(_data);
       }
     } catch (error) {
-      getError(error, "Failed to dislike comment", toast);
+      getError(error?.response?.data?.message || "Failed to dislike comment", "Network Error", toast);
     }
   };
 

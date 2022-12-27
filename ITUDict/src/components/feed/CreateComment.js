@@ -20,7 +20,7 @@ export const CreateComment = ({ topicId, title, fetchTopicComments }) => {
         fetchTopicComments();
       }
     } catch (error) {
-      getError(error, "Failed to create comment", toast);
+      getError(error?.response?.data?.message || "Failed to create comment", "Creation Error", toast);
     }
   };
 

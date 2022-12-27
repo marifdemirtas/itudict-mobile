@@ -25,7 +25,7 @@ const CustomizedTabBar = ({ state, descriptors, navigation, position, authContex
       await authAxios.get(backendApi.auth.logout);
       authContext.logout();
     } catch (error) {
-      getError(error, "Logout Failed", toast);
+      getError(error?.response?.data?.message || "Logout failed due to network error", "Logout Failed", toast);
     }
   };
 
