@@ -68,7 +68,7 @@ export const Register = ({ navigation }) => {
         });
       }
     } catch (error) {
-      getError(error, "Login Failed", toast);
+      getError(error?.response?.data?.message || "Please check your credentials!", "Registration Failed", toast);
     }
   };
 
