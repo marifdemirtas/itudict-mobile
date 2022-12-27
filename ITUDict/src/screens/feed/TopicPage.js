@@ -86,6 +86,25 @@ export const TopicPage = ({ route, navigation }) => {
     }
   };
 
+  const handleCreateComment = async (content) => {
+    try {
+      const response = await authAxios.post(backendApi.comment.create, {
+        topicId: route.params.topic._id,
+        title: route.params.topic.title,
+        content: content
+      });
+      if (response?.data) {
+        if (page.totalCount % 10 === 0) {
+          setPage((prev) => ({ ...prev, totalPage: prev.totalPage + 1, currentPage: prev.totalPage + 1 }));
+        } else {
+          fetchTopicComments();
+        }
+      }
+    } catch (error) {
+      getError(error?.response?.data?.message || "Failed to create comment", "Creation Error", toast);
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       fetchTopicComments();
@@ -149,9 +168,7 @@ export const TopicPage = ({ route, navigation }) => {
                 </VStack>
               </Box>
             ))}
-            {(page.currentPage === page.totalPage || page.totalCount === 0) && (
-              <CreateComment topicId={route.params.topic._id} title={route.params.topic.title} fetchTopicComments={fetchTopicComments} />
-            )}
+            {(page.currentPage === page.totalPage || page.totalCount === 0) && <CreateComment handleCreateComment={handleCreateComment} />}
             {page.totalPage > 1 && <Pagination currentPage={page.currentPage} totalPage={page.totalPage} setCurrentPage={setCurrentPage} />}
           </ScrollView>
         </Box>
