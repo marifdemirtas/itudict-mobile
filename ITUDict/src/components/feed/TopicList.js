@@ -8,7 +8,7 @@ export const TopicList = ({ data, topicNavigation }) => {
   return (
     <Box bg="dark.100" w="100%" h="100%">
       <ScrollView w="100%">
-        {authContext.getRole() == "senior" && <CreateTopic topicNavigation={topicNavigation} />}
+        {authContext.getRole() == "Senior" && <CreateTopic topicNavigation={topicNavigation} />}
         {data.map((item, index) => (
           <Pressable
             key={index}
