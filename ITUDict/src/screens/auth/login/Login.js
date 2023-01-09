@@ -82,11 +82,24 @@ export const Login = ({ navigation }) => {
         </Center>
         <VStack space={6} mt="5">
           <FormControl isInvalid={isInvalid.email}>
-            <Input placeholder="Enter your ITU email" onChangeText={(value) => setFormData({ ...formData, email: value })} />
+            <Input
+              autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect={false}
+              placeholder="Enter your ITU email"
+              onChangeText={(value) => setFormData({ ...formData, email: value })}
+            />
             <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>Please enter your ITU email</FormControl.ErrorMessage>
           </FormControl>
           <FormControl isInvalid={isInvalid.password}>
-            <Input type="password" placeholder="Enter your password" onChangeText={(value) => setFormData({ ...formData, password: value })} />
+            <Input
+              autoComplete="off"
+              autoCapitalize="none"
+              type="password"
+              autoCorrect={false}
+              placeholder="Enter your password"
+              onChangeText={(value) => setFormData({ ...formData, password: value })}
+            />
             <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>Password must be at least 6 characters</FormControl.ErrorMessage>
           </FormControl>
         </VStack>

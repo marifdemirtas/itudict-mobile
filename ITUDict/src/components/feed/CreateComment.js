@@ -17,6 +17,8 @@ export const CreateComment = ({ handleCreateComment }) => {
           placeholder="Write an entry..."
           bg="muted.400"
           color="black"
+          autoCorrect={false}
+          autoCapitalize="none"
           _focus={{ borderColor: "darkBlue.100", backgroundColor: "muted.400", color: "black" }}
           value={comment}
           onChange={(e) => setComment(e.currentTarget.value)}
