@@ -29,6 +29,9 @@ export const Pagination = ({ currentPage, totalPage, setCurrentPage, fetch }) =>
         py="5%"
         size="sm"
         textAlign="center"
+        autoCapitalize="none"
+        autoComplete="off"
+        autoCorrect={false}
         value={pageInput.toString()}
         onChangeText={(text) => {
           if (text === "") {

@@ -34,7 +34,14 @@ export const CreateTopic = ({ topicNavigation }) => {
           <Modal.Header>Create New Topic</Modal.Header>
           <Modal.Body>
             <FormControl isInvalid={error}>
-              <Input focusOutlineColor="darkBlue.100" placeholder="Enter new topic" onChangeText={(value) => setTopicName(value)} />
+              <Input
+                autoComplete="off"
+                autoCorrect={false}
+                autoCapitalize="none"
+                focusOutlineColor="darkBlue.100"
+                placeholder="Enter new topic"
+                onChangeText={(value) => setTopicName(value)}
+              />
               <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>Topic name is exist, try another one!</FormControl.ErrorMessage>
             </FormControl>
           </Modal.Body>

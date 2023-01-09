@@ -93,18 +93,40 @@ export const Register = ({ navigation }) => {
 
         <VStack space={6} mt="5">
           <FormControl isInvalid={isInvalid.username}>
-            <Input placeholder="Enter your username" onChangeText={(value) => setFormData({ ...formData, username: value })} />
+            <Input
+              autoCorrect={false}
+              autoComplete="off"
+              autoCapitalize="none"
+              placeholder="Enter your username"
+              onChangeText={(value) => setFormData({ ...formData, username: value })}
+            />
           </FormControl>
           <FormControl isInvalid={isInvalid.email}>
-            <Input placeholder="Enter your ITU email" onChangeText={(value) => setFormData({ ...formData, email: value })} />
+            <Input
+              autoCorrect={false}
+              autoComplete="off"
+              autoCapitalize="none"
+              placeholder="Enter your ITU email"
+              onChangeText={(value) => setFormData({ ...formData, email: value })}
+            />
             <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>Please enter your ITU email</FormControl.ErrorMessage>
           </FormControl>
           <FormControl isInvalid={isInvalid.password}>
-            <Input type="password" placeholder="Enter your password" onChangeText={(value) => setFormData({ ...formData, password: value })} />
+            <Input
+              autoCorrect={false}
+              autoCapitalize="none"
+              autoComplete="off"
+              type="password"
+              placeholder="Enter your password"
+              onChangeText={(value) => setFormData({ ...formData, password: value })}
+            />
             <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>Password must be at least 6 characters</FormControl.ErrorMessage>
           </FormControl>
           <FormControl isInvalid={isInvalid.passwordConfirm}>
             <Input
+              autoCorrect={false}
+              autoCapitalize="none"
+              autoComplete="off"
               type="password"
               placeholder="Confirm your password"
               onChangeText={(value) => setFormData({ ...formData, passwordConfirm: value })}

@@ -94,7 +94,7 @@ export const TopicPage = ({ route, navigation }) => {
         content: content
       });
       if (response?.data) {
-        if (page.totalCount % 10 === 0) {
+        if (page.totalCount % 10 === 0 && page.totalCount !== 0) {
           setPage((prev) => ({ ...prev, totalPage: prev.totalPage + 1, currentPage: prev.totalPage + 1 }));
         } else {
           fetchTopicComments();
